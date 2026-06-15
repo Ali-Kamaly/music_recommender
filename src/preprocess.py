@@ -11,8 +11,9 @@ def clean_data():
     
     #cleaning data - remove any null values 
     #there are repeated track_ids meaning duplicate songs 
-    new_df.dropna(inplace = True)
-    new_df.drop_duplicates(subset = 'track_id', inplace = True)
+    new_df = new_df.dropna()
+    new_df = new_df.drop_duplicates(subset = 'track_id')
+    new_df = new_df.drop_duplicates(subset = ['artists', 'track_name'])
     new_df = new_df.drop(columns = 'track_id')
     #track id now redundant after removing duplicates
 
@@ -37,7 +38,7 @@ def standardise_data(new_df):
     return new_df
 
 def save_df(df):
-    df.to_csv('data\processed\processed_dataset.csv')
+    df.to_csv('data/processed/processed_dataset.csv', index = False)
 
 
 def preprocess():
