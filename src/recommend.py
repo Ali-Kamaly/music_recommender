@@ -55,7 +55,8 @@ def get_query_vectors(query_songs, query_artists, df, similarity_features):
         matches = get_matches(query_songs[i], query_artists[i], df)
         #index of song in the df
         if matches.empty:
-            print(f"The song {query_songs[i]} by {query_artists[i]} was not found.")
+            #print(f"The song {query_songs[i]} by {query_artists[i]} was not found.")
+            return
         else:
             query_song = matches.iloc[0]
             #converted to series- only want first match
@@ -73,32 +74,40 @@ def get_query_vectors_avg(query_vectors):
     Returns one vector that is the average of all query vectors
     """
     if len(query_vectors)==0:
-        print("No valid songs found.")
+        #print("No valid songs found.")
         return
     query_vectors_avg = np.mean(query_vectors, axis = 0).reshape(1,-1)
     #getting average values for every similarity feature
     return query_vectors_avg
 
 
-def recommend():
+def get_recommendations(query_songs, query_artists):
     df, similarity_features = initial_set_up()
-    query_songs, query_artists = get_query_songs()
     query_vectors = get_query_vectors(query_songs, query_artists, df, similarity_features)
 
     print(query_vectors)
     query_vectors_avg = get_query_vectors_avg(query_vectors)
     if query_vectors_avg is None:
-        print("All songs entered are invalid.")
+        #print("All songs entered are invalid.")
         return    
 
-    print(query_vectors_avg)
+    #print(query_vectors_avg)
 
     song_vectors = convert_songs_to_vectors(df, similarity_features)
     recommendations, distances = find_closest_songs(query_vectors_avg, song_vectors, df)
 
-    print(recommendations[['track_name','artists']])
-    print(recommendations[similarity_features])
-    #printed in ascending order of distance i.e. closest similarity at top 
-    print(distances)
+    return recommendations, distances
 
-recommend()
+
+
+#recommendations, distances = get_recommendations(query_songs, )
+#print(recommendations[['track_name','artists']])
+#print(recommendations[similarity_features])
+#printed in ascending order of distance i.e. closest similarity at top 
+#print(distances)
+
+if __name__ == "__main__":
+    query_songs, query_artists = get_query_songs()
+    recommendations, distances = get_recommendations(query_songs, query_artists)
+    print(recommendations[["track_name", "artists"]])
+    print(distances)

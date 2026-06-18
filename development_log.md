@@ -35,7 +35,8 @@ Enter artist name: Drake;Wizkid;Kyla
 - starting off with smaller dataset leads to new discoveries of song taste
 
 18/06/2026
-- manual playlist style query
+- manual playlist style query, playlist embedding
     - find average song attribute values and find similar songs to average
     - setting up for future where user enters spotify public playlist link and program will find suggestions
     for the playlist
+- 
