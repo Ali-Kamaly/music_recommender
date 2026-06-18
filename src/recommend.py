@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+import numpy as np
 
 df = pd.read_csv('data/processed/processed_dataset.csv')
 similarity_features = ['danceability','energy','loudness','speechiness','acousticness','instrumentalness',
@@ -30,30 +31,50 @@ def find_closest_songs(query_vector, song_vectors):
     #finds mathematically closests songs to query song
     recommendations = df.iloc[indices[0]]
     recommendations = recommendations.iloc[0:6]
-    #closest song will inevitably be itself - disregard that recommendation
+    #closest song will inevitably be itself if query is one song - disregard that recommendation
     print(recommendations[['track_name','artists']])
     print(recommendations[similarity_features])
     #printed in ascending order of distance i.e. closest similarity at top 
     print(distances)
 
 def recommend():
-    query_song_name = input("Enter song name: ")
-    query_artist_name = input("Enter artist name: ")
-    matches = get_query_vector(query_song_name, query_artist_name)
-    #index of song in the df
-    if matches.empty:
-        print(f"The song {query_song_name} by {query_artist_name} was not found.")
-    else:
-        query_song = matches.iloc[0]
-        #converted to series- only want first match
-        query_vector = query_song[similarity_features].values.reshape(1,-1)
-        #converted to numpy array, only interested in similarity features values
-        #print(f"Queried song:\n{query_song}")
-        #print(f"Query vector:\n{query_vector}")
+    num_songs = int(input("How many songs to enter: "))
+    query_songs = []
+    query_artists = []
+    for i in range(num_songs):
+        query_song_name = input("Enter song name: ")
+        query_artist_name = input("Enter artist name: ")
+        query_songs.append(query_song_name)
+        query_artists.append(query_artist_name)
 
-        #print(matches)
+    query_vectors = []
+    for i in range (len(query_songs)):    
+        matches = get_query_vector(query_songs[i], query_artists[i])
+        #index of song in the df
+        if matches.empty:
+            print(f"The song {query_songs[i]} by {query_artists[i]} was not found.")
+        else:
+            query_song = matches.iloc[0]
+            #converted to series- only want first match
+            query_vector = query_song[similarity_features].values
+            query_vectors.append(query_vector)
+            #converted to numpy array, only interested in similarity features values
+            #print(f"Queried song:\n{query_song}")
+            #print(f"Query vector:\n{query_vector}")
+
+            #print(matches)
+    print(query_vectors)
+    if len(query_vectors)==0:
+        print("No valid songs found.")
+        return
+    query_vectors = np.mean(query_vectors, axis = 0).reshape(1,-1)
+    #getting average values for every similarity feature
+
+    print(query_vectors)
+    print()
+
     song_vectors = convert_songs_to_vectors()
-    find_closest_songs(query_vector, song_vectors)
+    find_closest_songs(query_vectors, song_vectors)
     
 
 
