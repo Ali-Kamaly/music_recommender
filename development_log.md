@@ -39,4 +39,9 @@ Enter artist name: Drake;Wizkid;Kyla
     - find average song attribute values and find similar songs to average
     - setting up for future where user enters spotify public playlist link and program will find suggestions
     for the playlist
-- 
+- implemented first version of streamlit application
+
+- interesting recommendation: smack that by akon and eminem closest song being: Ich bin stark by rolf zuckowski which does not have the same vibe whatsoever one is rap the other a nursey rhyme
+    - realised lyrics play an important role in music vibe and thus recommendation
+    - they share the same danceability/tempo but differed heavily on genre context and lyrical mood
+- added distance rounded to 3 dp to table on streamlit for user

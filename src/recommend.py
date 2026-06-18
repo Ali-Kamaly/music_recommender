@@ -73,7 +73,7 @@ def get_query_vectors_avg(query_vectors):
     """
     Returns one vector that is the average of all query vectors
     """
-    if len(query_vectors)==0:
+    if query_vectors is None:
         #print("No valid songs found.")
         return
     query_vectors_avg = np.mean(query_vectors, axis = 0).reshape(1,-1)
