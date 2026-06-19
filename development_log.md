@@ -45,3 +45,7 @@ Enter artist name: Drake;Wizkid;Kyla
     - realised lyrics play an important role in music vibe and thus recommendation
     - they share the same danceability/tempo but differed heavily on genre context and lyrical mood
 - added distance rounded to 3 dp to table on streamlit for user
+
+19/06/2026
+- first phase of feature scaling, user can adjust depending on preferences how they want to get recommended songs
+- I started with equal weighting after standardisation, then added user-controlled feature weighting to let users customise the similarity metric instead of assuming one universal definition of vibe

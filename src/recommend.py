@@ -81,12 +81,14 @@ def get_query_vectors_avg(query_vectors):
     return query_vectors_avg
 
 
-def get_recommendations(query_songs, query_artists):
+def get_recommendations(query_songs, query_artists, weights):
     df, similarity_features = initial_set_up()
     query_vectors = get_query_vectors(query_songs, query_artists, df, similarity_features)
+    weighted_query_vectors = query_vectors * weights
 
-    print(query_vectors)
-    query_vectors_avg = get_query_vectors_avg(query_vectors)
+    print(f"Default: {query_vectors}")
+    print(f"Weighted: {weighted_query_vectors}")
+    query_vectors_avg = get_query_vectors_avg(weighted_query_vectors)
     if query_vectors_avg is None:
         #print("All songs entered are invalid.")
         return    
@@ -94,7 +96,8 @@ def get_recommendations(query_songs, query_artists):
     #print(query_vectors_avg)
 
     song_vectors = convert_songs_to_vectors(df, similarity_features)
-    recommendations, distances = find_closest_songs(query_vectors_avg, song_vectors, df)
+    weighted_song_vectors = song_vectors * weights
+    recommendations, distances = find_closest_songs(query_vectors_avg, weighted_song_vectors, df)
 
     return recommendations, distances
 
@@ -107,7 +110,22 @@ def get_recommendations(query_songs, query_artists):
 #print(distances)
 
 if __name__ == "__main__":
+    danceability_weight, energy_weight, loudness_weight,speechiness_weight = 1,1,1,1
+    acousticness_weight,instrumentalness_weight, liveness_weight, valence_weight, tempo_weight = 1,1,1,1,1
+    weights = np.array([
+        danceability_weight,
+        energy_weight,
+        loudness_weight,
+        speechiness_weight,
+        acousticness_weight,
+        instrumentalness_weight,
+        liveness_weight,
+        valence_weight,
+        tempo_weight
+    ])
+
+    #need to have weights defined here
     query_songs, query_artists = get_query_songs()
-    recommendations, distances = get_recommendations(query_songs, query_artists)
+    recommendations, distances = get_recommendations(query_songs, query_artists, weights)
     print(recommendations[["track_name", "artists"]])
     print(distances)
