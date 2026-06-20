@@ -59,3 +59,6 @@ Enter artist name: Drake;Wizkid;Kyla
     They mean “how important is it that this feature matches the query song?”
     For example, increasing the energy weight does not mean recommending high-energy songs. It means recommendations must have energy values closer to the query song’s energy
 - added tickbox option for user to fine tune recommendation system themselves if they want to
+
+20/06/2026
+- integrating spotify web api via spotipy
