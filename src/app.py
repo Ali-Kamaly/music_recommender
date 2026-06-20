@@ -1,12 +1,12 @@
 import streamlit as st
 from recommend import get_recommendations
 import numpy as np
+from spotify_utils import search_track
 
 st.title("Orbit")
 st.write("Music that revolves around you")
 
 preset = st.selectbox("Choose what aspect of the song should matter most",["Balanced", "Rhythm Focused", "Energy Focused", "Acoustic Focused", "Vocals Focused", "Mood Focused"])
-advanced = st.checkbox("Advanced Controls")
 
 st.info(
 """Rhythm Focused = match movement/groove/danceability/tempo\n
@@ -15,6 +15,9 @@ Acoustic Focused = match organic/acoustic texture\n
 Vocals Focused = match speech/vocal-forward qualities\n
 Mood Focused = match emotional tone, mainly valence\n"""
 )
+
+advanced = st.checkbox("Advanced Controls")
+
 
 if preset == "Balanced":
     danceability_weight = 1.0
@@ -127,7 +130,19 @@ if st.button("Recommend"):
         st.error("Song not found :(")
     else:
         recommendations, distances = result
+        spotify_links = []
+        print(recommendations)
+        for _, row in recommendations.iterrows():
+            print(row)
+            result = search_track(row["track_name"], row["artists"])
+            if result is None:
+                spotify_links.append(None)
+            else:
+                url, album, cover = result
+                spotify_links.append(url)
         recommendations = recommendations.copy()
         recommendations['distance'] = distances[0].round(3)
-        st.dataframe(recommendations[["track_name","artists","distance"]])
+        recommendations = recommendations.copy()
+        recommendations['link'] = spotify_links
+        st.dataframe(recommendations[["track_name","artists","distance", "link"]])
         

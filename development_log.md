@@ -62,3 +62,6 @@ Enter artist name: Drake;Wizkid;Kyla
 
 20/06/2026
 - integrating spotify web api via spotipy
+- added spotify link to every song so can instantly go to spotify and play song
+    - tested with Apocalypse by Cigarettes After Sex and all songs recommended were accurate and had accurate links to Spotify
+- made whole app feel more polished and less of a dataframe website and more of a song recommendation website

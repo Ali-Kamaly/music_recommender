@@ -84,6 +84,8 @@ def get_query_vectors_avg(query_vectors):
 def get_recommendations(query_songs, query_artists, weights):
     df, similarity_features = initial_set_up()
     query_vectors = get_query_vectors(query_songs, query_artists, df, similarity_features)
+    if query_vectors is None:
+        return
     weighted_query_vectors = query_vectors * weights
 
     print(f"Default: {query_vectors}")
