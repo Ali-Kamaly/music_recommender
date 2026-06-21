@@ -28,3 +28,26 @@ def search_track(track_name, artist_name):
     cover = track["album"]["images"][0]["url"]
 
     return spotify_url, album, cover
+
+def extract_track_id(spotify_url):
+    if "track/" not in spotify_url:
+        print("not valid")
+        return None
+    
+    track_id = spotify_url.split('track/')[1].split('?')[0]
+    return track_id
+
+
+def get_track_from_url(spotify_url):
+    track_id = extract_track_id(spotify_url)
+    print(track_id)
+    if track_id is None:
+        return None
+    
+    track = sp.track(track_id)
+    track_name = track['name']
+    artists = ';'.join([artist['name'] for artist in track['artists']])
+    print(track_name, artists)
+    return track_name, artists
+
+get_track_from_url("https://open.spotify.com/track/6DCZcSspjsKoFjzjrWoCdn")

@@ -1,7 +1,7 @@
 import streamlit as st
 from recommend import get_recommendations
 import numpy as np
-from spotify_utils import search_track
+from spotify_utils import search_track, get_track_from_url
 
 st.title("Orbit")
 st.subheader("Music that revolves around you.")
@@ -113,16 +113,31 @@ weights = np.array([
     tempo_weight
 ])
 
-num_songs = st.number_input("How many songs would you like to enter: ", min_value = 1)
+input_mode = st.radio("Input type", ["Manual Entry", "Spotify Link"])
 
+num_songs = st.number_input("How many songs would you like to enter: ", min_value = 1)
 song_names = []
 artists = []
 
-for i in range(num_songs):
-    song_name = st.text_input(f"Song {i+1} Name")
-    artist_name = st.text_input(f"Artist {i+1} name(s) : ")
-    song_names.append(song_name)
-    artists.append(artist_name)
+if input_mode == "Manual Entry":
+
+    for i in range(num_songs):
+        song_name = st.text_input(f"Song {i+1} Name")
+        artist_name = st.text_input(f"Artist {i+1} name(s) : ")
+        song_names.append(song_name)
+        artists.append(artist_name)
+
+
+else:
+    for i in range(num_songs):
+        spotify_url = st.text_input(f"Paste spotify track {i+1} URL:")
+        track_data = get_track_from_url(spotify_url)
+        if track_data is None:
+            continue
+        track_name, artist = track_data
+        song_names.append(track_name)
+        artists.append(artist)
+
 
 if st.button("Recommend"):
     result = get_recommendations(song_names, artists, weights)
@@ -130,7 +145,6 @@ if st.button("Recommend"):
         st.error("Song not found :(")
     else:
         recommendations, distances = result
-        spotify_links = []
         print(recommendations)
         i, rank= 1,1
         #index i = 0 is the song itself hence dist = 0.0
@@ -158,4 +172,3 @@ if st.button("Recommend"):
                 i+=1
                 rank+=1
             st.divider()
-
