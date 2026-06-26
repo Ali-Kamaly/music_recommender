@@ -164,8 +164,18 @@ cluster
 Name: count, dtype: int64
 Inertia 209446.349067789
 
-- carried out PCA tests
+- carried out PCA
     - ![PCA test K = 3](image-1.png)
     - ![PCA test K = 7](image-2.png)
     - ![PCA test K = 10](image-3.png)
     - ![PCA test K = 25](image-4.png)
+    - from PCA its apparent there are obvious regions 
+    - increasing k subdivides the broad regions
+    - pca was useful to see that the clustering isn't random but isn't good to have a quantitive score of how well the clustering actually is
+        - since 9d was compressed to 2d obviously there will be overlaps in the graph
+- aim to implement silhouette score to get a quantitative measure of how well the clustering is for every k value in [3,7,10,25]
+- analysed the pca further and noticed on 48% of data was preserved when transorming 9D information to 2D
+    - ![Data on axes and preservation](image-5.png)
+    - explains why data was messier the higher the k-value (52% of data about the songs wasn't being  on the plot)
+    - PC1 almost looks like: modern energetic music <-> acoustic/quieter music
+    - PC2 is harder to judge but looked like: Happy/danceable/acoustic vs Instrumental/lower-energy/faster

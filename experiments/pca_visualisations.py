@@ -23,9 +23,19 @@ for k in k_values:
 
     pca = PCA(n_components = 2)
     projected = pca.fit_transform(song_vectors)
-    print(projected.shape)
+    """print(projected.shape)
     plt.scatter(projected[:,0],projected[:,1], c = cluster_labels, s = 5)
     plt.xlabel("Principal Component 1")
     plt.ylabel("Principal Component 2")
     plt.title(f"PCA Projection of Songs (K = {k})")
-    plt.show()
+    plt.show()"""
+
+pc_df = pd.DataFrame(
+    pca.components_,
+    columns=similarity_features,
+    index=["PC1", "PC2"]
+)
+
+print(pc_df)
+print(pca.explained_variance_ratio_)
+print(f"Preserving {sum(pca.explained_variance_ratio_)*100}% of the information")
