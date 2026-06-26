@@ -21,3 +21,8 @@ interia = kmeans.inertia_
 df['cluster'] = cluster_labels
 df.to_csv('data/processed/clustered_dataset.csv', index = False)
 np.save('data/processed/centroids.npy', centroids)
+
+centroids = np.load('data/processed/centroids.npy')
+print(centroids.shape)
+print(centroids)
+print(df['cluster'].value_counts())
