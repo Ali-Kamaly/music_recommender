@@ -83,4 +83,11 @@ Enter artist name: Drake;Wizkid;Kyla
 - trying to access more than 50 songs at a time from entered playlist
 
 ### 26/06/2026
-- currently not calculating number of songs in playlist properly
+- fixed bug which incorrectly only checked maximum of 45 songs in any given playlist
+- noticed program taking far longer to recommend songs when playlist is at a larger scale e.g playlist of 220 songs
+    - decided to start implementaion of kmeans clustering so Orbit will only need to use KNN on a smaller dataset (songs that are in the same cluster as the query vector)
+        - will enable discovery of new types of songs and discover musical regions
+        - may even display graphs showing how songs are connected, i.e. display the clusters
+        - faster recommendations speed
+        - Songs with similar values across those features tend to gather into "regions" rather than strange geometric shapes- that makes K-Means a pretty reasonable algorithm for Orbit
+- added cluster number to every song in new csv file
