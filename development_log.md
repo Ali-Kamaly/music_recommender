@@ -91,3 +91,6 @@ Enter artist name: Drake;Wizkid;Kyla
         - faster recommendations speed
         - Songs with similar values across those features tend to gather into "regions" rather than strange geometric shapes- that makes K-Means a pretty reasonable algorithm for Orbit
 - added cluster number to every song in new csv file
+- implemented elbow test to find suitable k value for k means clustering
+    - elbow appears to be 7-9 but that shouldn't mean instantly letting k = 7-9
+    ![K-Means Clustering Elbow Test](image.png)

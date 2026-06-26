@@ -8,7 +8,7 @@ similarity_features = ['danceability','energy','loudness','speechiness','acousti
 
 song_vectors = df[similarity_features].values
 
-k_values = range(2,20)
+k_values = range(2,51)
 inertias = []
 
 for k in k_values:
@@ -21,3 +21,4 @@ plt.xlabel("Number of clusters (K)")
 plt.ylabel("Inertia")
 plt.title("Elbow Method for K-Means")
 plt.show()
+
