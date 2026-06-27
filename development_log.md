@@ -188,3 +188,6 @@ Inertia 209446.349067789
         - the initial silouette score was a shock initially but later realised that songs are very similar even in a dataset of only 80k songs and so to actually divide them into clusters is difficult
         - silhouette score peaks at k = 7 
     - all tests (independent on one another) carried out (Elbow method, PCA & now Silhouette Score) point to k = 7 being an optimum k value
+- finalised k = 7 for k-means clustering
+    - explore further why cluster 3 has 1023 songs (far less than the other clusters) ![cluster sizes, k = 7](image-7.png)
+- Integrated clustered to reduce KNN search complexity as well as improve recommendations

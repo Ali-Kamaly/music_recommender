@@ -161,11 +161,12 @@ if st.button("Recommend"):
     else:
         recommendations, distances, valid_songs_count = result
         #print(recommendations)
-        i, rank= 1,1
+        i, rank= 0,1
         #index i = 0 is the song itself hence dist = 0.0
         for _, row in recommendations.iterrows():
             result = search_track(row["track_name"], row["artists"])
             if result is None:
+                print("result skipped")
                 continue
             
             url, album, cover = result

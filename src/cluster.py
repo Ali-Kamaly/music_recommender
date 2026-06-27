@@ -9,7 +9,7 @@ similarity_features = ['danceability','energy','loudness','speechiness','acousti
 
 song_vectors = convert_songs_to_vectors(df, similarity_features)
 
-kmeans = KMeans(n_clusters = 20, random_state = 217, n_init = 10)
+kmeans = KMeans(n_clusters = 7, random_state = 217, n_init = 10)
 
 kmeans.fit(song_vectors)
 

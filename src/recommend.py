@@ -3,12 +3,13 @@ from sklearn.neighbors import NearestNeighbors
 import numpy as np
 
 def initial_set_up():
-    df = pd.read_csv('data/processed/processed_dataset.csv')
+    df = pd.read_csv('data/processed/clustered_dataset.csv')
+    centroids = np.load('data/processed/centroids.npy').astype(float)
     similarity_features = ['danceability','energy','loudness','speechiness','acousticness','instrumentalness',
                     'liveness','valence','tempo']
     #the greater the number of similarity features the worse the suggestiong model will perform
     #most songs will become uniformly distributed
-    return df, similarity_features
+    return df, centroids, similarity_features
 
 def get_matches(song_name, artist_name, df):
     """
@@ -34,6 +35,9 @@ def find_closest_songs(query_vector, song_vectors, df):
     recommendations = df.iloc[indices[0]]
     recommendations = recommendations.iloc[1:6]
     #closest song will inevitably be itself if query is one song - disregard that recommendation later
+
+    distances = distances[:, 1:6]
+
     return recommendations, distances
 
 
@@ -63,7 +67,7 @@ def get_query_vectors(query_songs, query_artists, df, similarity_features):
             valid_songs +=1
             query_song = matches.iloc[0]
             #converted to series- only want first match
-            query_vector = query_song[similarity_features].values
+            query_vector = query_song[similarity_features].values.astype(float)
             query_vectors.append(query_vector)
             #converted to numpy array, only interested in similarity features values
             #print(f"Queried song:\n{query_song}")
@@ -81,13 +85,17 @@ def get_query_vectors_avg(query_vectors):
     if query_vectors is None:
         #print("No valid songs found.")
         return
-    query_vectors_avg = np.mean(query_vectors, axis = 0).reshape(1,-1)
+    query_vectors_avg = np.mean(query_vectors, axis = 0).astype(float).reshape(1,-1)
     #getting average values for every similarity feature
     return query_vectors_avg
 
+def find_nearest_centroid(query_vector, centroids):
+    distances = np.linalg.norm(centroids - query_vector, axis=1)
+    nearest_centroid = np.argmin(distances)
+    return nearest_centroid
 
 def get_recommendations(query_songs, query_artists, weights):
-    df, similarity_features = initial_set_up()
+    df, centroids, similarity_features = initial_set_up()
     query_vectors, valid_songs_count = get_query_vectors(query_songs, query_artists, df, similarity_features)
     if query_vectors is None:
         return
@@ -101,10 +109,14 @@ def get_recommendations(query_songs, query_artists, weights):
         return    
 
     #print(query_vectors_avg)
+    weighted_centroids = centroids * weights
+    nearest_centroid = find_nearest_centroid(query_vectors_avg, weighted_centroids)
 
-    song_vectors = convert_songs_to_vectors(df, similarity_features)
+    #running knn on a smaller more refined dataset (recommending songs from same cluster)
+    cluster_df = df[df['cluster']==nearest_centroid]
+    song_vectors = convert_songs_to_vectors(cluster_df, similarity_features)
     weighted_song_vectors = song_vectors * weights
-    recommendations, distances = find_closest_songs(query_vectors_avg, weighted_song_vectors, df)
+    recommendations, distances = find_closest_songs(query_vectors_avg, weighted_song_vectors, cluster_df)
 
     return recommendations, distances, valid_songs_count
 
