@@ -84,14 +84,14 @@ Enter artist name: Drake;Wizkid;Kyla
 
 ### 26/06/2026
 - fixed bug which incorrectly only checked maximum of 45 songs in any given playlist
-- noticed program taking far longer to recommend songs when playlist is at a larger scale e.g playlist of 220 songs
+- noticed Orbit taking far longer to recommend songs when playlist is at a larger scale e.g playlist of 220 songs
     - decided to start implementaion of kmeans clustering so Orbit will only need to use KNN on a smaller dataset (songs that are in the same cluster as the query vector)
-        - will enable discovery of new types of songs and discover musical regions
+        - will enable discovery of new types of songs and discover musical regions i.e. recommend from same cluster and also from next nearest cluster (discovery vs exploration)
         - may even display graphs showing how songs are connected, i.e. display the clusters
         - faster recommendations speed
         - Songs with similar values across those features tend to gather into "regions" rather than strange geometric shapes- that makes K-Means a pretty reasonable algorithm for Orbit
 - added cluster number to every song in new csv file
-- implemented elbow test to find suitable k value for k means clustering
+- implemented elbow method to find suitable k value for k means clustering
     - elbow appears to be 7-9 but that shouldn't mean instantly letting k = 7-9
     ![K-Means Clustering Elbow Test](image.png)
         - Hyperparameter tuning computationally expensive, running the test took a few minutes
@@ -171,11 +171,20 @@ Inertia 209446.349067789
     - ![PCA test K = 25](image-4.png)
     - from PCA its apparent there are obvious regions 
     - increasing k subdivides the broad regions
-    - pca was useful to see that the clustering isn't random but isn't good to have a quantitive score of how well the clustering actually is
+    - pca was useful to see that the clustering isn't random but isn't good due to lack of a quantitive score of how well the clustering actually is
         - since 9d was compressed to 2d obviously there will be overlaps in the graph
 - aim to implement silhouette score to get a quantitative measure of how well the clustering is for every k value in [3,7,10,25]
-- analysed the pca further and noticed on 48% of data was preserved when transorming 9D information to 2D
+- analysed the pca further and noticed only 48% of data was preserved when transorming 9D information to 2D
     - ![Data on axes and preservation](image-5.png)
     - explains why data was messier the higher the k-value (52% of data about the songs wasn't being  on the plot)
     - PC1 almost looks like: modern energetic music <-> acoustic/quieter music
     - PC2 is harder to judge but looked like: Happy/danceable/acoustic vs Instrumental/lower-energy/faster
+
+
+### 27/06/26
+- calculating silhouette score to have quantitative data to see how effective the clustering is across varying k values [3,7,10,25]
+    - initial silhouette scores were not amazing:![Initial Silhouette Score](image-6.png)
+        - maybe increase n_init to get better initial centroid locations
+        - the initial silouette score was a shock initially but later realised that songs are very similar even in a dataset of only 80k songs and so to actually divide them into clusters is difficult
+        - silhouette score peaks at k = 7 
+    - all tests (independent on one another) carried out (Elbow method, PCA & now Silhouette Score) point to k = 7 being an optimum k value
