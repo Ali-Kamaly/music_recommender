@@ -27,16 +27,16 @@ def convert_songs_to_vectors(df, similarity_features):
     return song_vectors
 
 def find_closest_songs(query_vector, song_vectors, df):
-    knn = NearestNeighbors(n_neighbors = 6, metric = 'euclidean')
+    knn = NearestNeighbors(n_neighbors = 10, metric = 'euclidean')
     knn.fit(song_vectors)
     #just stores song_vectors
     distances, indices = knn.kneighbors(query_vector)
     #finds mathematically closests songs to query song using euclidean distance
     recommendations = df.iloc[indices[0]]
-    recommendations = recommendations.iloc[1:6]
+    recommendations = recommendations.iloc[1:]
     #closest song will inevitably be itself if query is one song - disregard that recommendation later
 
-    distances = distances[:, 1:6]
+    distances = distances[:, 1:]
 
     return recommendations, distances
 

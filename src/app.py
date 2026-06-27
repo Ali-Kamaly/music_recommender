@@ -161,14 +161,21 @@ if st.button("Recommend"):
     else:
         recommendations, distances, valid_songs_count = result
         #print(recommendations)
-        i, rank= 0,1
         #index i = 0 is the song itself hence dist = 0.0
-        for _, row in recommendations.iterrows():
+        rank = 1
+        shown = 0
+        #defensive programming: if a song from database is no longer
+        #in spotify, display next best recommendations
+        for i, (_, row) in enumerate(recommendations.iterrows()):
+            if shown == 5:
+                break
             result = search_track(row["track_name"], row["artists"])
             if result is None:
-                print("result skipped")
+                print(f"recommended song {row['track_name']} by {row['artists']} is no longer on spotify")
                 continue
             
+            print(i, row['track_name'], row['artists'], distances[0][i])
+
             url, album, cover = result
             col1, col2 = st.columns([1,2])
             
@@ -185,7 +192,7 @@ if st.button("Recommend"):
                 st.write(f"Distance: {distances[0][i].round(3)}")
                 match_score = round(100 / (1 + distances[0][i].round(3)), 1)
                 st.write(f"Match Score: {match_score}%")
-                i+=1
-                rank+=1
+            rank+=1
+            shown+=1
             st.divider()
         st.write(f"Recommendations based on {valid_songs_count}/{len(song_names)} songs from playlist given.")
