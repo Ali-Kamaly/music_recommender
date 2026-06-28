@@ -201,3 +201,7 @@ Inertia 209446.349067789
 - noticed that the speedups between clustered KNN and normal KNN vary from 4-20 times faster depending on which song was picked
     - ![4-20 times speedups](image-10.png)
     - predicting this may be because of the cluster the song falls in, if the cluster is of smaller size, it'll lead to faster KNN searches as the song pool will be far smaller
+- carried out a better benchmark test to confirm hypothesis by sampling one song from every cluster
+- Benchmarked clustered KNN against full-dataset KNN by selecting one representative query from each K-Means cluster and averaging runtime over 100 reps
+    - results showed a median speedup of 13.76x and mean speedup of 18.68x. Smaller clusters produced larger gains, with the smallest cluster (cluster 3) achieving a 55.19x speedup
+        - This supports the decision to use K-Means as an offline preprocessing step to reduce KNN candidate search space

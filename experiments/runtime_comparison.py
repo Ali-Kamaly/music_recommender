@@ -76,4 +76,31 @@ def compare_runtimes(iterations = 10):
     print(f"Cluster KNN speedups mean: {np.mean(speed_ups)}")
     print(f"Cluster KNN speedups median: {np.median(speed_ups)}")
 
-compare_runtimes()
+#compare_runtimes()
+
+
+def compare_cluster_runtimes(repetitions = 100):
+    speed_ups = []
+
+    for cluster in sorted(df['cluster'].unique()):
+        cluster_df = df[df['cluster'] == cluster]
+        query_index = cluster_df.sample(1, random_state = 217).index[0]
+        query_vector = df.loc[[query_index], similarity_features].values
+
+        normal_speed = test_normal_knn_speed(query_vector, repetitions)
+        cluster_speed = test_clustered_knn_speed(query_index, query_vector, repetitions)
+        speed_up = normal_speed/cluster_speed
+        speed_ups.append(speed_up)
+
+        print(f"Cluster: {cluster}")
+        print(f"Cluster size: {len(cluster_df)}")
+        print(f"Query: {df.loc[query_index, 'track_name']} | {df.loc[query_index, 'artists']}")
+        print(f"Normal KNN Avg. Time: {normal_speed}")
+        print(f"Clustered KNN Avg. Time: {cluster_speed}")
+        print(f"Speedup: {speed_up}")
+
+    print(f"\nMean speedup: {np.mean(speed_ups)}")
+    print(f"Median speedup: {np.median(speed_ups)}")
+
+
+compare_cluster_runtimes()
