@@ -205,3 +205,12 @@ Inertia 209446.349067789
 - Benchmarked clustered KNN against full-dataset KNN by selecting one representative query from each K-Means cluster and averaging runtime over 100 reps
     - results showed a median speedup of 13.76x and mean speedup of 18.68x. Smaller clusters produced larger gains, with the smallest cluster (cluster 3) achieving a 55.19x speedup
         - This supports the decision to use K-Means as an offline preprocessing step to reduce KNN candidate search space
+- confirmed that k means clustering speeds up search times of recommended songs but want to now see if k means clustering actually leads to different recommendations or not and if so are they better recommendations or not
+    - will need to carry out Jaccard similarity test
+
+### 29/06/26
+-To evaluate whether K-Means clustering significantly altered recommendation behaviour, I compared the top 10 nearest neighbours returned by the original KNN recommender and the clustered KNN recommender. A larger candidate set was chosen because the application may discard recommendations that are unavailable through the Spotify API, ensuring that users can still receive five valid recommendations
+- ![Jaccard Score 1000 unique songs](image-11.png)
+    - median score of 1.0 shows more than half of songs tested had same recommendation
+        - suggests clustering drastically improves recommendations speed while also preserving most of the recommendation quality 
+    - extremelely low Jaccard score minimum shows how clustering can occasionally drastically change song recommendations perhaps the song was on the edge of a cluster 
