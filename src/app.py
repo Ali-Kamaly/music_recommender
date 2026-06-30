@@ -158,14 +158,16 @@ if st.button("Recommend"):
     if result is None:
         st.error("Song not found :(")
     else:
-        recommendations, distances, valid_songs_count = result
+        exploitation_recs, exploitation_dist, exploration_recs, exploration_dist, valid_songs_count = result
         #print(recommendations)
         #index i = 0 is the song itself hence dist = 0.0
         rank = 1
         shown = 0
         #defensive programming: if a song from database is no longer
         #in spotify, display next best recommendations
-        for i, (_, row) in enumerate(recommendations.iterrows()):
+
+        st.write("Closest Songs...")
+        for i, (_, row) in enumerate(exploitation_recs.iterrows()):
             if shown == 5:
                 break
             result = search_track(row["track_name"], row["artists"])
@@ -173,7 +175,7 @@ if st.button("Recommend"):
                 print(f"recommended song {row['track_name']} by {row['artists']} is no longer on spotify")
                 continue
             
-            print(i, row['track_name'], row['artists'], distances[0][i])
+            print(i, row['track_name'], row['artists'], exploitation_dist[0][i])
 
             url, album, cover = result
             col1, col2 = st.columns([1,2])
@@ -188,10 +190,47 @@ if st.button("Recommend"):
                 st.link_button("Open in Spotify", url)
 
                 st.write(f"Album: {album}")
-                st.write(f"Distance: {distances[0][i].round(3)}")
-                match_score = round(100 / (1 + distances[0][i].round(3)), 1)
+                st.write(f"Distance: {exploitation_dist[0][i].round(3)}")
+                match_score = round(100 / (1 + exploitation_dist[0][i].round(3)), 1)
                 st.write(f"Match Score: {match_score}%")
+                st.progress(match_score/100)
             rank+=1
             shown+=1
             st.divider()
+
+        shown_exp = 0
+        st.write("Expand Your Orbit")
+        for i, (_, row) in enumerate(exploration_recs.iterrows()):
+            if shown_exp == 2:
+                break
+            result = search_track(row["track_name"], row["artists"])
+            if result is None:
+                print(f"recommended song {row['track_name']} by {row['artists']} is no longer on spotify")
+                continue
+            
+            print(i, row['track_name'], row['artists'], exploration_dist[0][i])
+
+            url, album, cover = result
+            col1, col2 = st.columns([1,2])
+            
+            with col1:
+                st.write(f"### #{rank}")
+                st.image(cover, width=220)
+            
+            with col2:
+                st.markdown(
+            f"### {row['track_name']} | {row['artists']}")
+                st.link_button("Open in Spotify", url)
+
+                st.write(f"Album: {album}")
+                st.write(f"Distance: {exploration_dist[0][i].round(3)}")
+                match_score = round(100 / (1 + exploration_dist[0][i].round(3)), 1)
+                st.write(f"Match Score: {match_score}%")
+                st.progress(match_score/100)
+            rank+=1
+            shown_exp+=1
+            st.divider()
+
+        #refactor code above too messy
+
         st.write(f"Recommendations based on {valid_songs_count}/{len(song_names)} songs from playlist given.")

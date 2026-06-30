@@ -89,6 +89,11 @@ def get_query_vectors_avg(query_vectors):
     #getting average values for every similarity feature
     return query_vectors_avg
 
+def get_closest_centroids(query_vector, centroids):
+    distances = np.linalg.norm(centroids-query_vector, axis = 1)
+    return np.argsort(distances)
+
+
 def find_nearest_centroid(query_vector, centroids):
     distances = np.linalg.norm(centroids - query_vector, axis=1)
     nearest_centroid = np.argmin(distances)
@@ -110,15 +115,25 @@ def get_recommendations(query_songs, query_artists, weights):
 
     #print(query_vectors_avg)
     weighted_centroids = centroids * weights
-    nearest_centroid = find_nearest_centroid(query_vectors_avg, weighted_centroids)
+    closest_centroids = get_closest_centroids(query_vectors_avg, weighted_centroids)
+
+    #used for exploitation vs exploration
+    nearest_centroid = closest_centroids[0]
+    next_best_centroid = closest_centroids[1]
 
     #running knn on a smaller more refined dataset (recommending songs from same cluster)
-    cluster_df = df[df['cluster']==nearest_centroid]
-    song_vectors = convert_songs_to_vectors(cluster_df, similarity_features)
-    weighted_song_vectors = song_vectors * weights
-    recommendations, distances = find_closest_songs(query_vectors_avg, weighted_song_vectors, cluster_df)
+    exploitation_cluster_df = df[df['cluster']==nearest_centroid]
+    exploitation_song_vectors = convert_songs_to_vectors(exploitation_cluster_df, similarity_features)
+    weighted_exploitation_song_vectors = exploitation_song_vectors * weights
+    exploitation_recs, exploitation_dist = find_closest_songs(query_vectors_avg, weighted_exploitation_song_vectors, exploitation_cluster_df)
 
-    return recommendations, distances, valid_songs_count
+    exploration_cluster_df = df[df['cluster']==next_best_centroid]
+    exploration_song_vectors = convert_songs_to_vectors(exploration_cluster_df, similarity_features)
+    weighted_exploration_song_vectors = exploration_song_vectors * weights
+    exploration_recs, exploration_dist = find_closest_songs(query_vectors_avg, weighted_exploration_song_vectors, exploration_cluster_df)
+
+
+    return exploitation_recs, exploitation_dist, exploration_recs, exploration_dist, valid_songs_count
 
 
 

@@ -216,6 +216,10 @@ Inertia 209446.349067789
     - extremelely low Jaccard score minimum shows how clustering can occasionally drastically change song recommendations perhaps the song was on the edge of a cluster 
 
 ### 30/06/26
+- improved user interface and theme of Orbit app
+- maybe add progress bar of searching and curating recommendation songs before display suggested songs
 - implement common recommendation system of exploitation (recommendations confident user will like) vs exploration (ocassionally recommend something different the user may like) noticed from Spotify and Netflix
 - exploration could be titled : "Expand Your Orbit"
     - suggest few songs that user will likely like given query song and then suggest discovery songs that are in the next closest cluster so that it's controlled exploration and not just random suggestions
+
+-I split recommendations into exploitation and exploration. Exploitation returns songs nearest in feature space, while exploration searches the nearest neighbouring cluster to expose users to songs that remain similar but broaden their listening.
